@@ -61,14 +61,16 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-
-X = [ones(size(X, 1), 1) X];
-z2 = X * Theta1';
-a2 = sigmoid(z2);
-a2 = [ones(size(z2, 1), 1) a2];
+% -------------------------------------------------------------
+% Feedforward
+a1 = [ones(size(X, 1), 1) X];
+z2 = a1 * Theta1';
+a2 = [ones(size(z2, 1), 1) sigmoid(z2)];
 z3 = a2 * Theta2';
-h = sigmoid(z3);
+a3 = sigmoid(z3);
 
+% mapping label to an array like [0 0 .. 1 .. 0]
+% where 1 means examples belongs class i
 Y = zeros(m, num_labels);
 for i=1:m
   Y(i, y(i)) = 1;
@@ -77,15 +79,31 @@ end
 theta1_aux = [zeros(size(Theta1, 1), 1) Theta1(:, 2:end)];
 theta2_aux = [zeros(size(Theta2, 1), 1) Theta2(:, 2:end)];
 
-J = (-sum(sum(Y .* log(h) + (1 - Y) .* log(1 - h), 2))...
+J = (-sum(sum(Y .* log(a3) + (1 - Y) .* log(1 - a3), 2))...
     + ((lambda / 2) * sum([theta1_aux(:); theta2_aux(:)] .^ 2))) / m;
 
-% -------------------------------------------------------------
-
 % =========================================================================
+DELTA1 = zeros(size(Theta1));
+DELTA2 = zeros(size(Theta2));
+for t=1:m
+  delta_3 = a3(t, :) - Y(t, :);
+  z2_aux = [1 z2(t, :)];
+  delta_2 = (delta_3 * Theta2) .* sigmoidGradient(z2_aux);
+
+  DELTA1 = DELTA1 + delta_2(2:end)' * a1(t, :);
+  DELTA2 = DELTA2 + delta_3' * a2(t, :);
+
+end
+
+Theta1_grad = DELTA1 / m;
+Theta2_grad = DELTA2 / m;
+
+% regularization
+penalty1 = (lambda / m) * Theta1(:, 2:end);
+penalty2 = (lambda / m) * Theta2(:, 2:end);
+Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + penalty1;
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + penalty2;
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
-
 end
