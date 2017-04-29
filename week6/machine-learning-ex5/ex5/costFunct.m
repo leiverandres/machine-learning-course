@@ -1,4 +1,4 @@
-function [J, grad] = linearRegCostFunction(X, y, theta, lambda)
+function [J] = costFunct(X, y, theta, lambda)
 %LINEARREGCOSTFUNCTION Compute cost and gradient for regularized linear
 %regression with multiple variables
 %   [J, grad] = LINEARREGCOSTFUNCTION(X, y, theta, lambda) computes the
@@ -18,12 +18,8 @@ grad = zeros(size(theta));
 %
 %               You should set J to the cost and grad to the gradient.
 %
+
 h = X * theta;
 J = ( sum((h - y) .^ 2) + (lambda * sum(theta(2:end) .^ 2)) ) *  (1 / (2.0 * m));
-
-% =========================================================================
-
-grad = (X' * (h - y)) ./ m;
-grad(2:end) = grad(2:end) .+ ((lambda / m) .* theta(2:end));
 
 end

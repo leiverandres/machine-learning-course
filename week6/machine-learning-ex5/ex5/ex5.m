@@ -103,13 +103,11 @@ pause;
 %  Write Up Note: Since the model is underfitting the data, we expect to
 %                 see a graph with "high bias" -- Figure 3 in ex5.pdf
 %
-
 lambda = 0;
 [error_train, error_val] = ...
     learningCurve([ones(m, 1) X], y, ...
                   [ones(size(Xval, 1), 1) Xval], yval, ...
                   lambda);
-
 plot(1:m, error_train, 1:m, error_val);
 title('Learning curve for linear regression')
 legend('Train', 'Cross Validation')
@@ -164,7 +162,7 @@ pause;
 %  lambda to see how the fit and learning curve change.
 %
 
-lambda = 0;
+lambda = 1;
 [theta] = trainLinearReg(X_poly, y, lambda);
 
 % Plot training data and fit
