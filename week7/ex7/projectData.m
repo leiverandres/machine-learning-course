@@ -17,10 +17,13 @@ Z = zeros(size(X, 1), K);
 %                    x = X(i, :)';
 %                    projection_k = x' * U(:, k);
 %
+U_reduced = U(:, 1:K);
 
-
-
-
+Z = X * U_reduced;
+% m x n  n x K = m x k
+% m: examples
+% n: features
+% k: components
 % =============================================================
 
 end
